@@ -1,63 +1,52 @@
-// if click was detected
-for(var i =0 ; i< document.querySelectorAll(".drum").length ; i++){
-    document.querySelectorAll(".drum")[i].addEventListener("click",onclick);
-}
-function onclick(){//and onclick picks up the inner html of the key clicked by cursor
-    var buttonName= this.innerHTML;
-    makeSound(buttonName);
-    buttonAnimation(buttonName);
-}
-
-//if keyboard usage was detected
-document.addEventListener("keydown", function(event){ //function(event) picks the inner html of keyboard
-    makeSound(event.key);//sends the character itself.
-    buttonAnimation(event.key);
-});
-
-
-function makeSound(key){
-    switch (key) {
-        case "w":
-            var audio = new Audio('tom-1.mp3');
-            audio.play();
-            break;
-        
-        case "a":
-                var audio = new Audio('tom-2.mp3');
-                audio.play();
-                break;
-        case "s":
-                    var audio = new Audio('tom-3.mp3');
-                    audio.play();
-                    break;
-        case "d":
-                        var audio = new Audio('tom-4.mp3');
-                        audio.play();
-                        break;
-        case "j":
-                            var audio = new Audio('snare.mp3');
-                            audio.play();
-                            break;
-        case "k":
-                                var audio = new Audio('kick-bass.mp3');
-                                audio.play();
-                                break;
-        case "l":
-                                    var audio = new Audio('crash.mp3');
-                                    audio.play();
-                                    break;
-                                                                            
-            
-        default:
-            console.log(buttonName);
-            break;
+// Dictionary for sound mapping
+const soundMap = {
+    "w": "tom-1.mp3",
+    "a": "tom-2.mp3",
+    "s": "tom-3.mp3",
+    "d": "tom-4.mp3",
+    "j": "snare.mp3",
+    "k": "kick-bass.mp3",
+    "l": "crash.mp3"
+  };
+  
+  // Preload audio files
+  const audioMap = {};
+  for (let key in soundMap) {
+    audioMap[key] = new Audio(soundMap[key]);
+  }
+  
+  // Event listener for button clicks
+  document.querySelector(".set").addEventListener("click", function(event) {
+    if (event.target.classList.contains("drum")) {
+      var buttonName = event.target.innerHTML;
+      makeSound(buttonName);
+      buttonAnimation(buttonName);
     }
-}
-
-function buttonAnimation(currentkey){
-   var Button =  document.querySelector("."+currentkey);
-   Button.classList.add("pressed");
-   setTimeout(function(){
-    Button.classList.remove("pressed");
-   },100)
-}
+  });
+  
+  // Event listener for keydown events
+  document.addEventListener("keydown", function(event) {
+    if (soundMap[event.key]) {
+      makeSound(event.key);
+      buttonAnimation(event.key);
+    }
+  });
+  
+  function makeSound(key) {
+    if (audioMap[key]) {
+      audioMap[key].currentTime = 0; // Reset the audio to start
+      audioMap[key].play();
+    } else {
+      console.log(key);
+    }
+  }
+  
+  function buttonAnimation(currentKey) {
+    var button = document.querySelector("." + currentKey);
+    if (button) {
+      button.classList.add("pressed");
+      setTimeout(function() {
+        button.classList.remove("pressed");
+      }, 100);
+    }
+  }
